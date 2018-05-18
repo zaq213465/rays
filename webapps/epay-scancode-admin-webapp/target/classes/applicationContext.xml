@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-lazy-init="true">
+	<!-- 加载zk之外的配置，优先级最高 -->
+	<bean id="propConfigurer"
+		class="com.epay.commons.configuration.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="order" value="1" />
+		<property name="locations">
+			<list>
+				<!-- 标准配置 -->
+				<value>classpath*:/application-epay.properties</value>
+				<!-- 服务器生产环境配置 -->
+				<value>file:d:/application-epay.properties</value>
+				<value>file:/projects/hfscancode/config/admin.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
+	<context:component-scan base-package="com.epay.scancode.shiro" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+		
+	<context:component-scan base-package="com.epay.cache" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+	</context:component-scan>
+	
+	
+	<!-- ================================================================================== -->
+	<!-- 图片路径初始化 -->
+	<!-- ================================================================================== -->
+	<bean id="fileUploadConfig" class="com.epay.scancode.commons.FileUploadConfig" 
+		p:path="${epay.fileupload.root}" 
+		p:filePath="${epay.filepath.root}" 
+		p:qrcodePath="${epay.qrcodePath.root}"
+		p:viralPath="${epay.viralPath.root}"
+		p:qrPath="${epay.qrPath.root}">
+	</bean>
+	
+	<!-- ================================================================================== -->
+	<!-- Spring Session 结合redis实现session 共享 -->
+	<!-- ================================================================================== -->
+	<context:annotation-config /> 
+	<!-- 使用spring-session把http session放到redis里  -->
+	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <property name="maxInactiveIntervalInSeconds" value="1800"></property>
+	</bean> 
+	<!-- 	对象池配置 -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig"/>
+	<!-- 工厂实现 -->
+	<bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" 
+		p:host-name="${redis.hostName}" 
+		p:port="${redis.port}" 
+		p:pool-config-ref="poolConfig">
+	</bean>	
+	
+	<!-- ================================================================================== -->
+	<!-- 文件服务器客户端模块配置 -->
+	<!-- ================================================================================== -->
+	
+	<!-- ================================================================================== -->
+	<!-- 异常处理模块配置。 -->
+	<!-- ================================================================================== -->
+	<bean id="exceptionHandler" class="com.epay.commons.exception.SpringExceptionHandler">
+	</bean>
+    
+	<!-- 用于获取spring环境信息的工具类。 -->
+	<bean class="com.epay.commons.utils.Springs" lazy-init="false"></bean>
+	
+	<!-- redis缓存客户端-->
+	
+	<!-- ================================================================================== -->
+	<!-- 配置redis缓存管理器 -->
+	<!-- ================================================================================== -->
+	<bean id="redisSharedCache" class="com.epay.cache.jedis.impl.RedisSharedCache">
+		<property name="hostName" value="${redis.hostName}" />
+		<property name="port" value="${redis.port}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	
+	<!-- ================================================================================== -->
+	<!-- 短信模块模块配置 -->
+	<!-- ================================================================================== -->
+	<import resource="spring-shiro.xml"/>
+</beans>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+    http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+	default-lazy-init="true">
+
+	<description>服务配置 </description>
+    <dubbo:application name="epay-super-serviceapp"  />
+   	<dubbo:provider filter="InvocationRpcFilter"></dubbo:provider>
+    <dubbo:consumer timeout="15000"/>
+    <dubbo:registry address="zookeeper://${zookeeper.addr}" />
+    <dubbo:protocol name="dubbo" port="${epay.dubbo.port}" register="${service.register}"/>
+	<!-- <dubbo:monitor protocol="registry"/> -->
+    <!-- =================================================================================== -->
+    <!-- 对外的服务接口-->
+    <!-- =================================================================================== --> 
+    <bean id="adminServiceImpl" class="com.epay.scancode.service.operator.impl.AdminServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.AdminService" ref="adminServiceImpl" />
+	
+	<bean id="pageServiceImpl" class="com.epay.scancode.service.operator.impl.PageServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.PageService" ref="pageServiceImpl" />
+
+	<bean id="sysResourceServiceImpl" class="com.epay.scancode.service.operator.impl.SysResourceServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.SysResourceService" ref="sysResourceServiceImpl" />
+	
+	<bean id="sysRoleServiceImpl" class="com.epay.scancode.service.operator.impl.SysRoleServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.SysRoleService" ref="sysRoleServiceImpl" />
+	
+	<bean id="sysRoleUserServiceImpl" class="com.epay.scancode.service.operator.impl.SysRoleUserServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.SysRoleUserService" ref="sysRoleUserServiceImpl" />
+	
+	<bean id="urlFilterService" class="com.epay.scancode.service.operator.impl.UrlFilterServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.UrlFilterService" ref="urlFilterService" />
+	
+	<bean id="sysConfigServiceImpl" class="com.epay.scancode.service.operator.impl.SysConfigServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.SysConfigService" ref="sysConfigServiceImpl" />
+
+	<!-- 自增序列 -->
+	<bean id="idCreateServiceImpl" class="com.epay.scancode.service.operator.impl.IdCreateServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.IdCreateService" ref="idCreateServiceImpl" />
+
+	<!-- 节点关系表 -->
+	<bean id="nodeRelationService" class="com.epay.scancode.service.operator.impl.NodeRelationServiceImpl" />
+	<dubbo:service interface="com.epay.scancode.service.operator.NodeRelationService" ref="nodeRelationService" />
+
+	
+	<!-- API对外接口 -->
+<!-- 	<dubbo:reference id="ChannelWxParamsService" interface="com.epay.scancode.service.operator.ChannelWxParamsService" check="false"/>
+	<dubbo:reference id="adaptiveBusinessBaseService" interface="com.epay.pay.service.AdaptiveBusinessBaseService"  check="false"/>
+	<dubbo:reference id="platformPassageConfigService" interface="com.epay.pay.service.PlatfromPassageConfigService"  check="false"/>
+	<dubbo:reference id="merchantPushMessageService" interface="com.epay.scancode.notice.service.MerchantPushMessageService"  check="false"/>
+	<dubbo:reference id="merchantBusinessService" interface="com.epay.scancode.api.service.MerchantBusinessService"  check="false"/>
+	<dubbo:reference id="sMSService" interface="com.epay.scancode.notice.service.SMSService"  check="false"/> -->
+	
+</beans>
