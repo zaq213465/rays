@@ -1,0 +1,11 @@
+com\epay\scancode\commons\dao\AdminDAO.class
+com\epay\scancode\commons\dao\ProIndexDAO.class
+com\epay\scancode\commons\dao\SysConfigDAO.class
+com\epay\scancode\commons\dao\UrlFilterDAO.class
+com\epay\scancode\commons\dao\SysRoleDAO.class
+com\epay\scancode\commons\dao\SysResourceDAO.class
+com\epay\scancode\commons\dao\NodeRelationDAO.class
+com\epay\scancode\commons\dao\SysRoleResourceDAO.class
+com\epay\scancode\commons\dao\TimerMerchantPaywayDAO.class
+com\epay\scancode\commons\dao\AccountUserRalationDAO.class
+com\epay\scancode\commons\dao\SysRoleUserDAO.class
